@@ -11,6 +11,7 @@ $ProgressPreference = 'SilentlyContinue'
 $ScriptRoot = if ($PSScriptRoot) { $PSScriptRoot } else { Split-Path -Parent $MyInvocation.MyCommand.Path }
 $Root = (Resolve-Path (Join-Path $ScriptRoot '..')).Path
 if (-not $Destination) { $Destination = Join-Path $Root 'USB_RESCATE_VENTOY\tools\windows' }
+if (-not $PSBoundParameters.ContainsKey('Destination') -and (Test-Path -LiteralPath (Join-Path $Root 'ISO'))) { $Destination = Join-Path $Root 'tools\windows' }
 $LogDir = Join-Path $Root 'logs'
 New-Item -ItemType Directory -Force -Path $Destination, $LogDir | Out-Null
 $AuditPath = Join-Path $LogDir 'WINDOWS_FIELD_KIT_AUDIT.jsonl'

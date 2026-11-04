@@ -13,3 +13,8 @@ Arsenal_Digital/**/audit/
 
 Arsenal_Digital/**/tools/**/*.sha256
 Arsenal_Digital/**/tools/windows/SysinternalsSuite/
+
+# Local Python verification artifacts
+__pycache__/
+*.pyc
+.pytest_cache/

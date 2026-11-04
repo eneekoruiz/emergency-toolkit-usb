@@ -9,6 +9,7 @@ $ErrorActionPreference = 'Stop'
 
 $ScriptRoot = if ($PSScriptRoot) { $PSScriptRoot } else { Split-Path -Parent $MyInvocation.MyCommand.Path }
 if (-not $CaseRoot) { $CaseRoot = Join-Path (Resolve-Path (Join-Path $ScriptRoot '..')).Path 'USB_RESCATE_VENTOY\case_notes' }
+if (-not $PSBoundParameters.ContainsKey('CaseRoot') -and (Test-Path -LiteralPath (Join-Path $ScriptRoot '..\ISO'))) { $CaseRoot = Join-Path (Split-Path -Parent $ScriptRoot) 'case_notes' }
 
 $safeName = ($CaseName -replace '[^a-zA-Z0-9._-]', '_')
 $path = Join-Path $CaseRoot ("{0}-{1}.md" -f (Get-Date -Format 'yyyyMMdd-HHmmss'), $safeName)

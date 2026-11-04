@@ -16,8 +16,9 @@ $ErrorActionPreference = 'Stop'
 $officialUrl = 'https://www.microsoft.com/software-download/'
 $ScriptRoot = if ($PSScriptRoot) { $PSScriptRoot } else { Split-Path -Parent $MyInvocation.MyCommand.Path }
 $Root = (Resolve-Path (Join-Path $ScriptRoot '..')).Path
-$rufusPath = Join-Path $Root 'USB_RESCATE_VENTOY\tools\windows\rufus-4.15.exe'
-$windowsIsoDir = Join-Path $Root 'USB_RESCATE_VENTOY\ISO\05_installers\windows'
+if (Test-Path -LiteralPath (Join-Path $Root 'ISO')) { $rescueRoot = $Root } else { $rescueRoot = Join-Path $Root 'USB_RESCATE_VENTOY' }
+$rufusPath = Join-Path $rescueRoot 'tools\windows\rufus-4.15.exe'
+$windowsIsoDir = Join-Path $rescueRoot 'ISO\05_installers\windows'
 
 Write-Host '==========================================' -ForegroundColor Cyan
 Write-Host ' WINDOWS ISO ACQUISITION HELPER' -ForegroundColor Cyan

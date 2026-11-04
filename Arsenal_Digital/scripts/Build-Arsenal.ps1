@@ -14,6 +14,7 @@ $ProgressPreference = 'SilentlyContinue'
 $ScriptRoot = if ($PSScriptRoot) { $PSScriptRoot } else { Split-Path -Parent $MyInvocation.MyCommand.Path }
 if (-not $Root) { $Root = (Resolve-Path (Join-Path $ScriptRoot '..')).Path }
 if (-not $ManifestPath) { $ManifestPath = Join-Path $Root '00_MANIFIESTOS\tools.json' }
+$deployedRescue = Test-Path -LiteralPath (Join-Path $Root 'ISO')
 $tls = [Net.SecurityProtocolType]::Tls12
 if ([enum]::GetNames([Net.SecurityProtocolType]) -contains 'Tls13') {
     $tls = $tls -bor [Net.SecurityProtocolType]::Tls13
@@ -103,6 +104,7 @@ function Save-Asset {
     }
 
     $destDir = Join-Path $Root $Asset.destination
+    if ($deployedRescue) { $destDir = Join-Path $Root ($Asset.destination -replace '^USB_RESCATE_VENTOY[/\\]', '') }
     New-Item -ItemType Directory -Force -Path $destDir | Out-Null
     $destPath = Join-Path $destDir $resolvedFileName
     $shaPath = "$destPath.sha256"
@@ -137,6 +139,7 @@ function Save-Asset {
 
 try {
     $manifest = Get-Content -Raw -Path $ManifestPath | ConvertFrom-Json
+    if ($deployedRescue) { $manifest.assets = @($manifest.assets | Where-Object { $_.profile -eq 'USB_RESCATE_VENTOY' }) }
     if ($PlanOnly) {
         $manifest.assets | Where-Object { $IncludeOptional -or $_.enabled -ne $false } | Select-Object id, enabled, profile, version, fileName, destination, source | Format-Table -AutoSize
         Write-Audit -Event 'plan_only_complete' -Data @{ root = $Root; count = @($manifest.assets).Count }

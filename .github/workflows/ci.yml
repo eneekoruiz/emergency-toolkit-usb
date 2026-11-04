@@ -5,11 +5,13 @@ on:
     branches: [ "main" ]
     paths:
       - 'Arsenal_Digital/**'
+      - 'tests/**'
       - '.github/workflows/ci.yml'
   pull_request:
     branches: [ "main" ]
     paths:
       - 'Arsenal_Digital/**'
+      - 'tests/**'
       - '.github/workflows/ci.yml'
 
 concurrency:
@@ -45,3 +47,6 @@ jobs:
       shell: pwsh
       run: |
         ./Arsenal_Digital/scripts/Validate-Arsenal.ps1
+
+    - name: Test verifier and export layout with synthetic payloads
+      run: python3 -m unittest discover -s tests -p 'test_*.py'

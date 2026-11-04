@@ -52,6 +52,7 @@ Invoke-Step -Name 'SHA-256 sidecar verification' -Action { & (Join-Path $ScriptR
 Invoke-Step -Name 'Operational validation' -Action { & (Join-Path $ScriptRoot 'Validate-Arsenal.ps1') }
 
 $msertPath = Join-Path $Root 'USB_RESCATE_VENTOY\tools\windows\msert-x64.exe'
+if (Test-Path -LiteralPath (Join-Path $Root 'ISO')) { $msertPath = Join-Path $Root 'tools\windows\msert-x64.exe' }
 $msertAge = $null
 if (Test-Path $msertPath) { $msertAge = [math]::Round(((Get-Date) - (Get-Item $msertPath).LastWriteTime).TotalDays, 1) }
 

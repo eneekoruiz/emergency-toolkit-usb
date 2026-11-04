@@ -42,12 +42,17 @@ $critical = @(
 )
 if (-not $SkipPayloadCheck) {
     foreach ($rel in $critical) {
+        if (Test-Path -LiteralPath (Join-Path $Root 'ISO')) {
+            if ($rel.StartsWith('USB_PRIVACIDAD_TAILS\')) { continue }
+            $rel = $rel -replace '^USB_RESCATE_VENTOY\\', ''
+        }
         $path = Join-Path $Root $rel
         if (-not (Test-Path $path)) { Add-Failure "Missing critical payload: $rel"; continue }
         if (-not (Test-Path "$path.sha256")) { Add-Failure "Missing SHA-256 sidecar: $rel" }
     }
 
     $msert = Join-Path $Root 'USB_RESCATE_VENTOY\tools\windows\msert-x64.exe'
+    if (Test-Path -LiteralPath (Join-Path $Root 'ISO')) { $msert = Join-Path $Root 'tools\windows\msert-x64.exe' }
     if (Test-Path $msert) {
         $age = ((Get-Date) - (Get-Item $msert).LastWriteTime).TotalDays
         if ($age -gt 10) { Add-Warning "MSERT older than 10 days: $([math]::Round($age,1)) days" }
@@ -69,6 +74,7 @@ $requiredDocs = @(
     'SECRETS\PROTOCOLO_BOVEDA.md'
 )
 foreach ($rel in $requiredDocs) {
+    if (Test-Path -LiteralPath (Join-Path $Root 'ISO')) { $rel = $rel -replace '^USB_RESCATE_VENTOY\\', '' }
     if (-not (Test-Path (Join-Path $Root $rel))) { Add-Failure "Missing required doc: $rel" }
 }
 

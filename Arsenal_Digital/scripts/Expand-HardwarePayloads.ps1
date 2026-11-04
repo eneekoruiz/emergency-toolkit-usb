@@ -10,6 +10,7 @@ $ErrorActionPreference = 'Stop'
 $ScriptRoot = if ($PSScriptRoot) { $PSScriptRoot } else { Split-Path -Parent $MyInvocation.MyCommand.Path }
 $Root = (Resolve-Path (Join-Path $ScriptRoot '..')).Path
 if (-not $HardwareIsoDir) { $HardwareIsoDir = Join-Path $Root 'USB_RESCATE_VENTOY\ISO\04_hardware' }
+if (-not $PSBoundParameters.ContainsKey('HardwareIsoDir') -and (Test-Path -LiteralPath (Join-Path $Root 'ISO'))) { $HardwareIsoDir = Join-Path $Root 'ISO\04_hardware' }
 
 $zip = Get-ChildItem -Path $HardwareIsoDir -Filter 'mt86plus_*_x86_64.grub.iso.zip' -File | Select-Object -First 1
 if (-not $zip) { throw "Memtest86+ ZIP not found in $HardwareIsoDir" }
