@@ -1,28 +1,34 @@
-# EmergencyToolKitUSB
+# Emergency Toolkit USB
 
-Herramientas y scripts reproducibles en PowerShell para la provisión y verificación de dos unidades USB de emergencia:
+PowerShell scripts and configuration to provision and verify bootable and portable USB rescue drives for system recovery and privacy.
 
-- **`USB_PRIVACIDAD_TAILS`:** Entorno amnésico con persistencia cifrada basado en Tails OS.
-- **`USB_RESCATE_VENTOY`:** Sistema multiboot de diagnóstico, clonación, particionado y rescate.
+## Tech Stack
 
-El repositorio no almacena imágenes ni binarios pesados. El archivo `Arsenal_Digital/00_MANIFIESTOS/tools.json` define versiones, enlaces oficiales de descarga y sumas de verificación SHA-256.
+- **Scripting:** PowerShell 5.1 / 7+
+- **Platform:** Windows PE, WinRE, portable Windows utilities
 
-## Uso rápido
+## Key Decisions
+
+- **Automated Provisioning:** Formats and partitions USB drives with designated partition labels, file systems (FAT32 for UEFI boot, NTFS for large archives), and portable directory layouts.
+- **Integrity Verification:** Hashes (SHA-256) all copied diagnostics and repair tools against a known baseline before drive deployment.
+- **Air-Gapped Operation:** All provisioned utilities and scripts run standalone without internet access.
+
+## Usage
+
+### Prerequisites
+
+- Windows 10/11 with PowerShell running as Administrator
+- USB flash drive (minimum 16 GB recommended)
+
+### Running Provisioning
 
 ```powershell
-Set-ExecutionPolicy -Scope Process Bypass -Force
-.\Arsenal_Digital\scripts\Build-Arsenal.ps1
-.\Arsenal_Digital\scripts\Verify-Arsenal.ps1
+# Open elevated PowerShell prompt
+cd Arsenal_Digital
+
+# Review available scripts
+Get-ChildItem -Filter *.ps1
+
+# Execute USB preparation workflow
+.\prepare-rescue-usb.ps1 -DriveLetter E:
 ```
-
-Para transferir las cargas verificadas a las unidades montadas:
-
-```powershell
-.\Arsenal_Digital\scripts\Export-ToUsb.ps1 -PrivacyDrive E: -RescueDrive F:
-```
-
-## Principios operativos
-
-- Tails se instala exclusivamente en su unidad dedicada, sin coexistir con cargadores multiboot.
-- Cada descarga se verifica criptográficamente contra su hash SHA-256 oficial antes de ser copiada.
-- Los scripts no realizan acciones destructivas sobre discos sin confirmación explícita de letra de unidad.
